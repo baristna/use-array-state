@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react';
-import { IuseCustomHook } from './types';
+import { useState } from 'react';
 
-const useCustomHook:IuseCustomHook = (initialState) => {
-  const [state, setState] = useState(initialState);
+function useStateAsArray<T>(initialState:T[]):([T[], (index:number, value:T) => void]) {
+  const [arrayState, setArrayState] = useState<T[]>(initialState);
 
-  useEffect(() => {
-    setState(initialState)
-  }, [initialState])
+  const setAtIndex = (index:number, value:T):void => {
+    const currentState:T[] = [...arrayState] || [];
+    currentState[index] = value;
+    setArrayState(currentState);
+  };
 
-  return [state, setState]
-};
+  return [arrayState, setAtIndex];
+}
 
-export default useCustomHook
+export default useStateAsArray
